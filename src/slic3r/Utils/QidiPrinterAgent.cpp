@@ -37,6 +37,27 @@ bool has_visible_base_preset(const PresetCollection& filaments, const std::strin
     return false;
 }
 
+// Find the filament id of a visible preset of the product named by alias, the part of a preset name before
+// its first '@'. A preset compatible with the selected printer wins over one that is only visible.
+std::string find_filament_id_by_alias(const PresetCollection& filaments, const std::string& alias)
+{
+    std::string visible_id;
+    if (alias.empty())
+        return visible_id;
+    for (const auto& p : filaments.get_presets()) {
+        if (!p.is_visible || p.filament_id.empty())
+            continue;
+        const std::string name_alias = boost::trim_right_copy(p.name.substr(0, p.name.find('@')));
+        if (name_alias != alias)
+            continue;
+        if (p.is_compatible)
+            return p.filament_id;
+        if (visible_id.empty())
+            visible_id = p.filament_id;
+    }
+    return visible_id;
+}
+
 } // anonymous namespace
 
 const std::string QidiPrinterAgent_VERSION = "0.0.1";
@@ -131,6 +152,61 @@ bool QidiPrinterAgent::print_uploaded_file(const PrintParams& params, const std:
     // On the X-Max 4 and Q2, Klipper only opens the copy Moonraker's print start makes, so SDCARD_PRINT_FILE can't find the upload
     std::string response;
     return send_jsonrpc_command(device_info.base_url, device_info.api_key, print_start_request(params, filename), response);
+}
+
+std::string QidiPrinterAgent::product_alias(int vendor_type, int filament_type_idx)
+{
+    // Vendor and material codes of the firmware's Box slots, the same in every QIDI printer series.
+    // Generated from the filament_id of QIDI Studio 2.07.02.60's filament profiles.
+    static const std::map<std::pair<int, int>, std::string> aliases = {
+        {{0, 1}, "Generic PLA"},
+        {{0, 4}, "Generic PLA Silk"},
+        {{0, 11}, "Generic ABS"},
+        {{0, 23}, "Generic PC"},
+        {{0, 41}, "Generic PETG"},
+        {{0, 50}, "Generic TPU 95A"},
+        {{1, 1}, "QIDI PLA Rapido"},
+        {{1, 2}, "QIDI PLA Rapido Matte"},
+        {{1, 3}, "QIDI PLA Rapido Metal"},
+        {{1, 4}, "QIDI PLA Silk"},
+        {{1, 5}, "QIDI PLA-CF"},
+        {{1, 6}, "QIDI WOOD Rapido"},
+        {{1, 7}, "QIDI PLA Basic"},
+        {{1, 8}, "QIDI PLA Matte Basic"},
+        {{1, 11}, "QIDI ABS Rapido"},
+        {{1, 12}, "QIDI ABS-GF"},
+        {{1, 13}, "QIDI ABS Rapido Metal"},
+        {{1, 14}, "QIDI ABS Odorless"},
+        {{1, 15}, "QIDI TPU-GF"},
+        {{1, 18}, "QIDI ASA"},
+        {{1, 19}, "QIDI ASA-Aero"},
+        {{1, 20}, "QIDI ASA-CF"},
+        {{1, 24}, "QIDI UltraPA"},
+        {{1, 25}, "QIDI PA6-CF"},
+        {{1, 26}, "QIDI UltraPA-CF25"},
+        {{1, 27}, "QIDI PA12-CF"},
+        {{1, 30}, "QIDI PAHT-CF"},
+        {{1, 31}, "QIDI PAHT-GF"},
+        {{1, 32}, "QIDI Support For PAHT"},
+        {{1, 33}, "QIDI Support For PET/PA"},
+        {{1, 34}, "QIDI PC/ABS-FR"},
+        {{1, 36}, "QIDI PEBA 95A"},
+        {{1, 37}, "QIDI PET-CF"},
+        {{1, 38}, "QIDI PET-GF"},
+        {{1, 39}, "QIDI PETG Basic"},
+        {{1, 40}, "QIDI PETG Tough"},
+        {{1, 41}, "QIDI PETG Rapido"},
+        {{1, 42}, "QIDI PETG-CF"},
+        {{1, 43}, "QIDI PETG-GF"},
+        {{1, 44}, "QIDI PPS-CF"},
+        {{1, 45}, "QIDI PETG Translucent"},
+        {{1, 46}, "QIDI PPS-GF"},
+        {{1, 49}, "QIDI TPU-Aero"},
+        {{1, 50}, "QIDI TPU 95A-HF"},
+    };
+    const int vendor = (vendor_type == 1) ? 1 : 0;
+    const auto it    = aliases.find({vendor, filament_type_idx});
+    return it == aliases.end() ? std::string() : it->second;
 }
 
 nlohmann::json QidiPrinterAgent::print_start_request(const PrintParams& params, const std::string& filename)
@@ -265,6 +341,10 @@ bool QidiPrinterAgent::fetch_slot_info(const std::string&        base_url,
                 tray.tray_info_idx = setting_id;
             } else if (!setting_id.empty() && has_visible_base_preset(bundle->filaments, setting_id)) {
                 tray.tray_info_idx = setting_id;
+            } else if (std::string product_id = find_filament_id_by_alias(bundle->filaments, product_alias(vendor_type, filament_type));
+                       !product_id.empty()) {
+                // Orca's QIDI presets carry Orca filament ids, not QIDI Studio's QD_ ids: match the product by name
+                tray.tray_info_idx = product_id;
             } else {
                 tray.tray_info_idx = bundle->filaments.filament_id_by_type(tray.tray_type);
                 if (tray.tray_info_idx.empty())

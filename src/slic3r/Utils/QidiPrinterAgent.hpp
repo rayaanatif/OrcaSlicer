@@ -29,6 +29,9 @@ public:
     static std::string build_tool_slot_script(const std::string& ams_mapping);
     // Builds the body of Moonraker's print start for an uploaded file, naming the plate to print when it is a 3MF
     static nlohmann::json print_start_request(const PrintParams& params, const std::string& filename);
+    // Names the filament product a Box slot's vendor and material codes stand for (QIDI Studio's
+    // QD_<series>_<vendor>_<material> catalog), or returns an empty string for an unknown code
+    static std::string product_alias(int vendor_type, int filament_type_idx);
 
 protected:
     // Saves the Box slot picked for each filament in the print dialog, then starts the print through Moonraker

@@ -59,3 +59,23 @@ TEST_CASE("The print start of a 3MF names the plate to print", "[QidiPrinterAgen
           nlohmann::json{{"filename", "Cube.gcode.3mf"}, {"plateindex", "2"}});
     CHECK(QidiPrinterAgent::print_start_request(params, "Cube.gcode") == nlohmann::json{{"filename", "Cube.gcode"}});
 }
+
+TEST_CASE("A Box slot's vendor and material codes name the QIDI filament product", "[QidiPrinterAgent]")
+{
+    CHECK(QidiPrinterAgent::product_alias(1, 1) == "QIDI PLA Rapido");
+    CHECK(QidiPrinterAgent::product_alias(1, 50) == "QIDI TPU 95A-HF");
+    CHECK(QidiPrinterAgent::product_alias(0, 41) == "Generic PETG");
+}
+
+TEST_CASE("Any vendor code other than QIDI's names a generic filament", "[QidiPrinterAgent]")
+{
+    // The firmware writes 1 for QIDI filament; the slot's vendor code is otherwise treated as generic.
+    CHECK(QidiPrinterAgent::product_alias(2, 1) == "Generic PLA");
+}
+
+TEST_CASE("An unknown Box material code names no product", "[QidiPrinterAgent]")
+{
+    const int material = GENERATE(0, -1, 9999);
+    CAPTURE(material);
+    CHECK(QidiPrinterAgent::product_alias(1, material).empty());
+}
