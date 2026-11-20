@@ -1,0 +1,39 @@
+name: Build QIDI integration (Windows x64)
+
+# Windows x64 build and unit tests of the QIDI integration branch, without the
+# full platform matrix of build_all.yml. The installer and portable build are
+# uploaded as workflow artifacts (unsigned: signing only runs upstream).
+
+on:
+  push:
+    branches:
+      - qidi-integration
+  workflow_dispatch:
+
+concurrency:
+  group: build-qidi-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_windows:
+    name: Build Windows x64
+    permissions:
+      actions: write
+      contents: write
+      id-token: write
+    uses: ./.github/workflows/build_check_cache.yml
+    with:
+      os: windows-latest
+      arch: x64
+      compiler: clang
+      build-deps-only: false
+    secrets: inherit
+
+  unit_tests_windows_x64:
+    name: Unit tests Windows x64
+    needs: build_windows
+    if: ${{ !cancelled() && success() }}
+    uses: ./.github/workflows/unit_tests.yml
+    with:
+      os: windows-latest
+      artifact: ${{ github.sha }}-tests-windows-x64
