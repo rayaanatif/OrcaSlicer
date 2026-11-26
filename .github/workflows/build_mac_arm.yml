@@ -1,0 +1,43 @@
+name: Build macOS arm64
+
+# Standalone Apple Silicon build: runs on a push to this branch or by hand.
+on:
+  push:
+    branches: [build-mac-arm]
+  workflow_dispatch:
+
+jobs:
+  build_mac_arm:
+    name: Build OrcaSlicer macOS arm64
+    runs-on: macos-15
+    timeout-minutes: 300
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          lfs: 'false'
+
+      - name: Install tools
+        run: brew install ninja libtool
+
+      - name: Build dependencies
+        run: ./build_release_macos.sh -d -x -a arm64 -t 12.0 -j 3
+
+      - name: Build slicer
+        run: ./build_release_macos.sh -s -x -a arm64 -t 12.0 -j 3
+
+      - name: Package DMG and zip
+        run: |
+          app=build/arm64/OrcaSlicer/OrcaSlicer.app
+          test -d "$app"
+          mkdir -p dist dmg_src
+          cp -R "$app" dmg_src/
+          ln -sfn /Applications dmg_src/Applications
+          hdiutil create -volname OrcaSlicer -srcfolder dmg_src -ov -format UDZO dist/OrcaSlicer_Mac_arm64.dmg
+          ditto -c -k --keepParent "$app" dist/OrcaSlicer_Mac_arm64.app.zip
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: OrcaSlicer_Mac_arm64
+          path: dist/*
