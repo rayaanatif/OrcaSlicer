@@ -1,6 +1,6 @@
-name: Build macOS arm64
+name: Build macOS arm64 and Windows
 
-# Standalone Apple Silicon build: runs on a push to this branch or by hand.
+# Standalone Apple Silicon and Windows builds: run on a push to this branch or by hand.
 on:
   push:
     branches: [build-mac-arm]
@@ -41,3 +41,29 @@ jobs:
         with:
           name: OrcaSlicer_Mac_arm64
           path: dist/*
+
+  build_windows:
+    name: Build OrcaSlicer Windows x64
+    runs-on: windows-latest
+    timeout-minutes: 300
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          lfs: 'false'
+
+      - name: Build dependencies and slicer
+        shell: cmd
+        run: .\build_win.bat -ds
+
+      - name: Package
+        shell: pwsh
+        run: |
+          if (-not (Test-Path build/OrcaSlicer/orca-slicer.exe)) { Get-ChildItem build -Recurse -Filter orca-slicer.exe | Select-Object -First 3 FullName; throw "orca-slicer.exe not found in build/OrcaSlicer" }
+          7z a -tzip OrcaSlicer_Windows_x64_portable.zip ./build/OrcaSlicer
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: OrcaSlicer_Windows_x64_portable
+          path: OrcaSlicer_Windows_x64_portable.zip
