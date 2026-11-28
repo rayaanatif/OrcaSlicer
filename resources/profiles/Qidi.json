@@ -1,6 +1,6 @@
 {
 	"name": "Qidi",
-	"version": "02.04.00.21",
+	"version": "02.04.00.22",
 	"force_update": "0",
 	"description": "Qidi configurations",
 	"machine_model_list": [
@@ -2369,6 +2369,10 @@
 			"sub_path": "filament/HATCHBOX PETG @Qidi.json"
 		},
 		{
+			"name": "Kingroon PETG @base",
+			"sub_path": "filament/Kingroon/Kingroon PETG @base.json"
+		},
+		{
 			"name": "QIDI PETG Basic",
 			"sub_path": "filament/QIDI PETG Basic.json"
 		},
@@ -2419,6 +2423,10 @@
 		{
 			"name": "HATCHBOX PLA @Qidi",
 			"sub_path": "filament/HATCHBOX PLA @Qidi.json"
+		},
+		{
+			"name": "Kingroon PLA @base",
+			"sub_path": "filament/Kingroon/Kingroon PLA @base.json"
 		},
 		{
 			"name": "Overture PLA @Qidi",
@@ -7205,6 +7213,10 @@
 			"sub_path": "filament/HATCHBOX PETG @Qidi X-Plus 4 0.8 nozzle.json"
 		},
 		{
+			"name": "Kingroon PETG @Qidi Q2 0.4 nozzle",
+			"sub_path": "filament/Kingroon/Kingroon PETG @Qidi Q2 0.4 nozzle.json"
+		},
+		{
 			"name": "QIDI PETG Basic @0.2 nozzle",
 			"sub_path": "filament/QIDI PETG Basic @0.2 nozzle.json"
 		},
@@ -7659,6 +7671,10 @@
 		{
 			"name": "HATCHBOX PLA @Qidi X-Plus 4 0.8 nozzle",
 			"sub_path": "filament/HATCHBOX PLA @Qidi X-Plus 4 0.8 nozzle.json"
+		},
+		{
+			"name": "Kingroon PLA @Qidi Q2 0.4 nozzle",
+			"sub_path": "filament/Kingroon/Kingroon PLA @Qidi Q2 0.4 nozzle.json"
 		},
 		{
 			"name": "Overture PLA @Qidi 0.2 nozzle",

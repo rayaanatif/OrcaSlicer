@@ -1,0 +1,11 @@
+{
+	"type": "filament",
+	"name": "Kingroon PETG @Qidi Q2 0.4 nozzle",
+	"inherits": "Kingroon PETG @base",
+	"from": "system",
+	"setting_id": "68mCTXFvRwHHATKn",
+	"instantiation": "true",
+	"compatible_printers": [
+		"Qidi Q2 0.4 nozzle"
+	]
+}

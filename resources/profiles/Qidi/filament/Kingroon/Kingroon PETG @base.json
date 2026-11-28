@@ -1,0 +1,137 @@
+{
+	"type": "filament",
+	"name": "Kingroon PETG @base",
+	"inherits": "fdm_filament_pet",
+	"from": "system",
+	"filament_id": "OFg5S0pm",
+	"instantiation": "false",
+	"filament_vendor": [
+		"Kingroon"
+	],
+	"filament_type": [
+		"PETG"
+	],
+	"activate_air_filtration": [
+		"1"
+	],
+	"activate_air_filtration_during_print": [
+		"1"
+	],
+	"activate_air_filtration_on_completion": [
+		"1"
+	],
+	"additional_cooling_fan_speed": [
+		"0"
+	],
+	"close_fan_the_first_x_layers": [
+		"3"
+	],
+	"complete_print_exhaust_fan_speed": [
+		"70"
+	],
+	"cool_plate_temp": [
+		"60"
+	],
+	"cool_plate_temp_initial_layer": [
+		"60"
+	],
+	"default_filament_colour": [
+		"#3A3A3A"
+	],
+	"dont_slow_down_outer_wall": [
+		"1"
+	],
+	"during_print_exhaust_fan_speed": [
+		"100"
+	],
+	"enable_overhang_bridge_fan": [
+		"1"
+	],
+	"enable_pressure_advance": [
+		"1"
+	],
+	"fan_cooling_layer_time": [
+		"30"
+	],
+	"fan_max_speed": [
+		"100"
+	],
+	"fan_min_speed": [
+		"40"
+	],
+	"filament_cost": [
+		"30"
+	],
+	"filament_density": [
+		"1.27"
+	],
+	"filament_flow_ratio": [
+		"0.975"
+	],
+	"filament_max_volumetric_speed": [
+		"10"
+	],
+	"filament_retraction_length": [
+		"0.2"
+	],
+	"hot_plate_temp": [
+		"80"
+	],
+	"hot_plate_temp_initial_layer": [
+		"80"
+	],
+	"nozzle_temperature": [
+		"250"
+	],
+	"nozzle_temperature_initial_layer": [
+		"255"
+	],
+	"nozzle_temperature_range_high": [
+		"260"
+	],
+	"nozzle_temperature_range_low": [
+		"220"
+	],
+	"overhang_fan_speed": [
+		"95"
+	],
+	"overhang_fan_threshold": [
+		"10%"
+	],
+	"pressure_advance": [
+		"0.059"
+	],
+	"reduce_fan_stop_start_freq": [
+		"1"
+	],
+	"slow_down_for_layer_cooling": [
+		"1"
+	],
+	"slow_down_layer_time": [
+		"12"
+	],
+	"slow_down_min_speed": [
+		"10"
+	],
+	"supertack_plate_temp": [
+		"70"
+	],
+	"supertack_plate_temp_initial_layer": [
+		"70"
+	],
+	"temperature_vitrification": [
+		"70"
+	],
+	"textured_cool_plate_temp": [
+		"40"
+	],
+	"textured_cool_plate_temp_initial_layer": [
+		"40"
+	],
+	"textured_plate_temp": [
+		"80"
+	],
+	"textured_plate_temp_initial_layer": [
+		"80"
+	]
+}

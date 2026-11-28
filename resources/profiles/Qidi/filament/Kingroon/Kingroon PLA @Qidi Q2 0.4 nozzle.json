@@ -1,0 +1,11 @@
+{
+	"type": "filament",
+	"name": "Kingroon PLA @Qidi Q2 0.4 nozzle",
+	"inherits": "Kingroon PLA @base",
+	"from": "system",
+	"setting_id": "OxQnm7dr9ZfRTkBZ",
+	"instantiation": "true",
+	"compatible_printers": [
+		"Qidi Q2 0.4 nozzle"
+	]
+}
